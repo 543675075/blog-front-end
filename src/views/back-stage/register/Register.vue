@@ -24,7 +24,7 @@
 
 
 <script>
-import { register } from "../network/user";
+import { register } from "network/back-stage";
 export default {
   name: "Register",
   components: {},
@@ -32,20 +32,20 @@ export default {
     // 第一次输入密码
     const password = (rule, value, callback) => {
       const regPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/;
-      if (regPassword.test(value)) return callback;
+      if (regPassword.test(value)) return callback();
       callback(
         new Error("8-16个字符，必须包含1个大写字母和1个小写字母和1个数字")
       );
     };
     // 检查与第一次密码是否相同
     const checkPassword2 = (rule, value, callback) => {
-      if (value === this.registForm.password) return callback;
+      if (value === this.registForm.password) return callback();
       callback(new Error("两次密码输入不同"));
     };
     // 校验邮箱
     const checkedEmail = (rule, value, callback) => {
       const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-      if (regEmail.test(value)) return callback;
+      if (regEmail.test(value)) return callback();
       callback(new Error("请输入正确的邮箱"));
     };
     return {
@@ -78,14 +78,17 @@ export default {
   methods: {
     
     // 注册
-    async onSubmit() {
-      const res = await register({ ...this.registForm })
-      console.log(res)
-      if(res.data.err_code === 1)  return this.$message.error(res.data.msg)
-      this.$message.success('注册成功,2秒后跳转到登陆页面')
-      setTimeout(()=>{
-        this.$router.replace('/login')
-      },2000)
+     onSubmit() {
+      this.$refs.form.validate(async res => {
+        if(!res) return 
+        const result = await register({ ...this.registForm })
+        console.log(result)
+        if(result.data.err_code === 1)  return this.$message.error(result.data.msg)
+        this.$message.success('注册成功,2秒后跳转到登陆页面')
+        setTimeout(()=>{
+          this.$router.replace('/login')
+        },2000)
+      })
     },
     // 重置
     reset() {

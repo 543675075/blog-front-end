@@ -1,15 +1,14 @@
-// module.exports = {
-//   devServer: {
-//     proxy: {
-//       '/api': {
-//         target: 'http://localhost:5000/',
-//         changeOrigin: true,
-
-//         pathRewrite: {
-//           '^/api': ''
-
-//         }
-//       }
-//     }
-//   }
-// }
+module.exports = {
+  configureWebpack: {
+    resolve: {
+      alias: {
+        'network' : '@/network',
+        'views': '@/views',
+        'components': '@/components',
+        'router': '@/router',
+        'store' : '@/store',
+        'assets': '@/assets'
+      }
+    }
+  }
+}
